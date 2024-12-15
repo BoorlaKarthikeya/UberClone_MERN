@@ -8,6 +8,7 @@ const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState({});
+  const [errors, setErrors] = useState([]);
 
   const { user, setUser } = useContext(UserDataContext);
   const navigate = useNavigate();
@@ -15,21 +16,35 @@ const UserLogin = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    setUserData({
+    const userData = {
       email: email,
       password: password,
-    });
+    };
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/users/login`,
-      userData
-    );
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/login`,
+        userData
+      );
 
-    if (response.status === 200) {
-      const data = response.data;
-      setUser(data.user);
-      localStorage.setItem("token", data.token);
-      navigate("/home");
+      if (response.status === 200) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
+    } catch (error) {
+      if (error.response) {
+        if (error.response.data.errors) {
+          setErrors(error.response.data.errors);
+        } else if (error.response.data.message) {
+          setErrors([{ msg: error.response.data.message }]);
+        }
+      } else {
+        setErrors([
+          { msg: "An unexpected error occurred. Please try again later." },
+        ]);
+      }
     }
 
     setEmail("");
@@ -45,31 +60,22 @@ const UserLogin = () => {
           alt=""
         />
 
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
+        <form onSubmit={(e) => submitHandler(e)}>
           <h3 className="text-lg font-medium mb-2">What's your email</h3>
           <input
             required
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
             className="bg-[#eeeeee] mb-7 rounded-lg px-4 py-2 border w-full text-lg placeholder:text-base"
             type="email"
             placeholder="email@example.com"
           />
 
           <h3 className="text-lg font-medium mb-2">Enter Password</h3>
-
           <input
             className="bg-[#eeeeee] mb-7 rounded-lg px-4 py-2 border w-full text-lg placeholder:text-base"
             value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
             required
             type="password"
             placeholder="password"
@@ -79,6 +85,17 @@ const UserLogin = () => {
             Login
           </button>
         </form>
+
+        {errors.length > 0 && (
+          <div className="mb-4">
+            {errors.map((error, index) => (
+              <p key={index} className="text-red-500 text-sm">
+                {error.msg}
+              </p>
+            ))}
+          </div>
+        )}
+
         <p className="text-center">
           New here?{" "}
           <Link to="/signup" className="text-blue-600">
@@ -86,6 +103,7 @@ const UserLogin = () => {
           </Link>
         </p>
       </div>
+
       <div>
         <Link
           to="/captain-login"

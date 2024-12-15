@@ -8,7 +8,7 @@ const UserSignup = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userData, setUserData] = useState({});
+  const [errors, setErrors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -16,6 +16,8 @@ const UserSignup = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setErrors([]);
+
     const newUser = {
       fullname: {
         firstname: firstName,
@@ -25,23 +27,37 @@ const UserSignup = () => {
       password: password,
     };
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/users/register`,
-      newUser
-    );
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/users/register`,
+        newUser
+      );
 
-    if (response.status === 201) {
-      const data = response.data;
-      setUser(data.user);
-      localStorage.setItem("token", data.token);
-      navigate("/home");
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
+
+      setFirstName("");
+      setLastName("");
+      setPassword("");
+    } catch (error) {
+      if (error.response) {
+        if (error.response.data.errors) {
+          setErrors(error.response.data.errors);
+        } else if (error.response.data.message) {
+          setErrors([{ msg: error.response.data.message }]);
+        }
+      } else {
+        setErrors([
+          { msg: "An unexpected error occurred. Please try again later." },
+        ]);
+      }
     }
-
-    setEmail("");
-    setFirstName("");
-    setLastName("");
-    setPassword("");
   };
+
   return (
     <div>
       <div className="p-7 h-screen flex flex-col justify-between">
@@ -57,13 +73,11 @@ const UserSignup = () => {
               submitHandler(e);
             }}
           >
-            <h3 className="text-lg w-1/2  font-medium mb-2">
-              What's your name
-            </h3>
+            <h3 className="text-lg w-1/2 font-medium mb-2">What's your name</h3>
             <div className="flex gap-4 mb-7">
               <input
                 required
-                className="bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border  text-lg placeholder:text-base"
+                className="bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base"
                 type="text"
                 placeholder="First name"
                 value={firstName}
@@ -73,7 +87,7 @@ const UserSignup = () => {
               />
               <input
                 required
-                className="bg-[#eeeeee] w-1/2  rounded-lg px-4 py-2 border  text-lg placeholder:text-base"
+                className="bg-[#eeeeee] w-1/2 rounded-lg px-4 py-2 border text-lg placeholder:text-base"
                 type="text"
                 placeholder="Last name"
                 value={lastName}
@@ -96,7 +110,6 @@ const UserSignup = () => {
             />
 
             <h3 className="text-lg font-medium mb-2">Enter Password</h3>
-
             <input
               className="bg-[#eeeeee] mb-7 rounded-lg px-4 py-2 border w-full text-lg placeholder:text-base"
               value={password}
@@ -108,12 +121,23 @@ const UserSignup = () => {
               placeholder="password"
             />
 
+            {/* Error Messages */}
+            {errors.length > 0 && (
+              <div className="mb-4">
+                {errors.map((error, index) => (
+                  <p key={index} className="text-red-500 text-sm">
+                    {error.msg}
+                  </p>
+                ))}
+              </div>
+            )}
+
             <button className="bg-[#111] text-white font-semibold mb-3 rounded-lg px-4 py-2 w-full text-lg placeholder:text-base">
               Create account
             </button>
           </form>
           <p className="text-center">
-            Already have a account?{" "}
+            Already have an account?{" "}
             <Link to="/login" className="text-blue-600">
               Login here
             </Link>

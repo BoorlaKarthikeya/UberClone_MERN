@@ -7,33 +7,46 @@ import { CaptainDataContext } from "../context/CapatainContext";
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const { captain, setCaptain } = React.useContext(CaptainDataContext);
   const navigate = useNavigate();
 
-  console.log("in captain login component");
   const submitHandler = async (e) => {
     e.preventDefault();
     const captain = {
       email: email,
       password,
     };
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/captains/login`,
+        captain
+      );
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/captains/login`,
-      captain
-    );
+      if (response.status === 200) {
+        const data = response.data;
 
-    if (response.status === 200) {
-      const data = response.data;
+        setCaptain(data.captain);
+        localStorage.setItem("token", data.token);
+        navigate("/captain-home");
+      }
 
-      setCaptain(data.captain);
-      localStorage.setItem("token", data.token);
-      navigate("/captain-home");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      if (error.response) {
+        if (error.response.data.errors) {
+          setErrors(error.response.data.errors);
+        } else if (error.response.data.message) {
+          setErrors([{ msg: error.response.data.message }]);
+        }
+      } else {
+        setErrors([
+          { msg: "An unexpected error occurred. Please try again later." },
+        ]);
+      }
     }
-
-    setEmail("");
-    setPassword("");
   };
   return (
     <div className="p-7 h-screen flex flex-col justify-between">
@@ -73,6 +86,16 @@ const CaptainLogin = () => {
             type="password"
             placeholder="password"
           />
+
+          {errors.length > 0 && (
+            <div className="mb-4">
+              {errors.map((error, index) => (
+                <p key={index} className="text-red-500 text-sm">
+                  {error.msg}
+                </p>
+              ))}
+            </div>
+          )}
 
           <button className="bg-[#111] text-white font-semibold mb-3 rounded-lg px-4 py-2 w-full text-lg placeholder:text-base">
             Login
