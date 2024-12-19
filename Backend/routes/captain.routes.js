@@ -19,7 +19,7 @@ router.post('/register', [
 );
 router.post('/login', [
     body('email').isEmail().withMessage('Invalid Email'),
-    body('password').isLength({ min: 6 }).withMessage('Ivalid password')
+    body('password').isLength({ min: 6 }).withMessage('Invalid password')
 ], captainController.loginCaptain);
 
 router.get('/profile', authMiddleWare.authCaptain, captainController.getCaptainProfile);
