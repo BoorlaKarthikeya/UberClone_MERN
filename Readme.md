@@ -111,7 +111,7 @@ npm run dev
   ![Captain Details to User](./screenshots/captainDetailsToUser.png)
 - Ride popup to captain
   ![Ride popup to captain](./screenshots/ridePopUpCaptain.png)
-  Ride confirmation to captain
+- Ride confirmation to captain
   ![Ride confirmation to captain](./screenshots/rideConfirmationCaptain.png)
 
 ## Future Improvements
