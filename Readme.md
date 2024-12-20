@@ -95,15 +95,24 @@ npm run dev
 
 ### Screenshots
 
-![User Login Page](./screenshots/userSignin.png)
-![Captain Login Page](./screenshots/captainLogin.png)
-![User Home Page](./screenshots/userHomePage.png)
-![User Ride Booking](./screenshots/bookingRide.png)
-![Ride Price Chart ](./screenshots/priceFareChartUser.png)
-![User Ride Conformation](./screenshots/confirmRideUser.png)
-![Captain Details to User](./screenshots/captainDetailsToUser.png)
-![Ride popup to captain](./screenshots/ridePopUpCaptain.png)
-![Ride confirmation to captain](./screenshots/rideConfirmationCaptain.png)
+- User Login Page
+  ![User Login Page](./screenshots/userSignin.png)
+- Captain Login Page
+  ![Captain Login Page](./screenshots/captainLogin.png)
+- User Home Page]
+  ![User Home Page](./screenshots/userHomePage.png)
+- User Ride Booking
+  ![User Ride Booking](./screenshots/bookingRide.png)
+- Ride Price Chart
+  ![Ride Price Chart ](./screenshots/priceFareChartUser.png)
+- User Ride Conformation
+  ![User Ride Conformation](./screenshots/confirmRideUser.png)
+- Captain Details to User
+  ![Captain Details to User](./screenshots/captainDetailsToUser.png)
+- Ride popup to captain
+  ![Ride popup to captain](./screenshots/ridePopUpCaptain.png)
+  Ride confirmation to captain
+  ![Ride confirmation to captain](./screenshots/rideConfirmationCaptain.png)
 
 ## Future Improvements
 
